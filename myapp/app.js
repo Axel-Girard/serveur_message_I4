@@ -8,7 +8,15 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+// enrichissement du prototype de response
+require('./response');
+
 var app = express();
+
+if (module.parent === null) {
+  app.listen(3000);
+  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+}
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

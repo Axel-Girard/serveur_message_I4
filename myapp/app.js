@@ -5,11 +5,23 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var messages = require('./routes/messages');
 
 // enrichissement du prototype de response
 require('./response');
+
+// connection à la base mongodb
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://88.190.3.123:27018/my_database');
+// schema de la table
+var Schema = mongoose.Schema,
+    ObjectId = Schema.ObjectId;
+
+var MessagePost = new Schema({
+    author    : ObjectId,
+    body      : String,
+    date      : Date
+});
 
 var app = express();
 
@@ -18,10 +30,6 @@ if (module.parent === null) {
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 }
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-
 app.use(favicon());
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -29,8 +37,11 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+app.use('/messages', messages);
+
+app.all('/?*', function (req, res) {
+  res.respond("Méthode de requête non autorisée.", 405);
+});
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
@@ -62,6 +73,5 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
 
 module.exports = app;

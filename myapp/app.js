@@ -5,30 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var messages = require('./routes/messages');
+var thread = require('./routes/thread');
 
 // enrichissement du prototype de response
 require('./response');
-
-// connection à la base mongodb
-var mongoose = require('mongoose');
-mongoose.connect('mongodb://88.190.3.123:27018/my_database');
-// schema de la table
-var Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
-
-var MessagePost = new Schema({
-    author    : ObjectId,
-    body      : String,
-    date      : Date
-});
+// initialisation de la bdd
+require('./bdd');
 
 var app = express();
-
-if (module.parent === null) {
-  app.listen(3000);
-  console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
-}
 
 app.use(favicon());
 app.use(logger('dev'));
@@ -37,7 +21,7 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/messages', messages);
+app.use('/thread', thread);
 
 app.all('/?*', function (req, res) {
   res.respond("Méthode de requête non autorisée.", 405);
@@ -45,33 +29,9 @@ app.all('/?*', function (req, res) {
 
 /// catch 404 and forwarding to error handler
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-    next(err);
-});
-
-/// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-        message: err.message,
-        error: {}
-    });
+  var err = new Error('Not Found');
+  err.status = 404;
+  next(err);
 });
 
 module.exports = app;

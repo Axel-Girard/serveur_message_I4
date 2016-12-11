@@ -108,6 +108,7 @@ router.delete('/:idThread/:idMessage', function(req, res) {
   messageModel.remove({ _id : req.params.idMessage }, function (err) {
     if (err) throw err;
     console.log('Message supprimé !');
+    res.respond('Message supprimé !', 200);
   });
 });
 

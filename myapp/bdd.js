@@ -1,4 +1,5 @@
 // initialise la bdd
+
 // connection à la base mongodb
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://88.190.3.123:27018/messages', function(err) {

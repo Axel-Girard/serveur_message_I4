@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var user = require('./routes/user');
 var thread = require('./routes/thread');
 
 // enrichissement du prototype de response
@@ -22,6 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/thread', thread);
+app.use('/user', user);
 
 app.all('/?*', function (req, res) {
   res.respond("Méthode de requête non autorisée.", 405);

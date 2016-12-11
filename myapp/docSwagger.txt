@@ -1,0 +1,328 @@
+---
+swagger: "2.0"
+info:
+  description: "Un service REST, fait en JS avec nodeJs, pour un projet scolaire fait en groupe. Le but étant de faire un site ou plusieurs personnes puissent faire un brainstorm avec toutes les membres du site."
+  version: "1.0.0"
+  title: "Service message brain strom"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+tags:
+- name: "brainstorm"
+  description: "Tout sur le brainstorm"
+- name: "enregistrement"
+  description: "Accès aux messages des brainstormeurs"
+- name: "membre"
+  description: "Operations sur des membres"
+- name: "rest"
+  description: "Service REST"
+paths:
+  /user/creation:
+    put:
+      tags:
+      - "membre"
+      summary: "Ajout un membre à la bdd"
+      description: ""
+      operationId: "addUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "pseudo"
+        description: "Le pseudo du membre"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "successful operation"
+        403:
+          description: "Pseudo déjà utilisé"
+  /user/{idUser}:
+    get:
+      tags:
+      - "membre"
+      summary: "Retourne les info du membre"
+      description: ""
+      operationId: "seeUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "params"
+        name: "id"
+        description: "L'id' du membre"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "Personne non trouvée"
+    delete:
+      tags:
+      - "membre"
+      summary: "Supprime un membre de la bdd"
+      description: ""
+      operationId: "deleteUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "params"
+        name: "id"
+        description: "L'id du membre"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "Personne non trouvée"
+  /user/connect:
+    post:
+      tags:
+      - "membre"
+      summary: "Retourne l'id du membre'"
+      description: ""
+      operationId: "connectUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "pseudo"
+        description: "Le pseudo' du membre"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      - in: "body"
+        name: "mdp"
+        description: "Le mot de passe du membre"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "Personne non trouvée"
+  /thread:
+    get:
+      tags:
+      - "thread"
+      summary: "Retourne les threads"
+      description: ""
+      operationId: "getThreads"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Thread"
+    put:
+      tags:
+      - "thread"
+      summary: "Ajout un thread à la bdd"
+      description: ""
+      operationId: "addThread"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "idUser"
+        description: "L'id du membre"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "messages"
+        description: "Le premier message du thread (id et date auto-généré)"
+        required: true
+        schema:
+          type: "array"
+          items:
+            $ref: "#/definitions/Message"
+      - in: "body"
+        name: "title"
+        description: "Le titre du thread"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Thread"
+        401:
+          description: "Vous devez être authentifié pour créer un thread"
+  /thread/{idThread}:
+    get:
+      tags:
+      - "thread"
+      summary: "Retourne un thread"
+      description: ""
+      operationId: "getThread"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "params"
+        name: "id"
+        description: "L'id du thread"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Thread"
+    patch:
+      tags:
+      - "thread"
+      summary: "Ajout un message à un thread"
+      description: ""
+      operationId: "updateThread"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "idUser"
+        description: "L'id du membre qui poste le message"
+        required: true
+        type: "string"
+      - in: "body"
+        name: "message"
+        description: "Le message à ajouter au thread"
+        required: true
+        type: "string"
+      - in: "params"
+        name: "idTrhead"
+        description: "L'id du thread"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Thread"
+        404:
+          description: "Thread non trouvé"
+        401:
+          description: "Vous devez être authentifié pour créer un thread"
+    delete:
+      tags:
+      - "thread"
+      summary: "Supprime un thread"
+      description: ""
+      operationId: "deleteThread"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "params"
+        name: "idTrhead"
+        description: "L'id du thread"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "thread supprimé !"
+  /thread/{idThread}/{idMessage}:
+    delete:
+      tags:
+      - "thread"
+      summary: "Supprime un message"
+      description: ""
+      operationId: "deleteMessage"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "params"
+        name: "idTrhead"
+        description: "L'id du thread"
+        required: true
+        type: "string"
+      - in: "params"
+        name: "idMessage"
+        description: "L'id du message à supprimer du thread"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "thread supprimé !"
+definitions:
+  Thread:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      createur:
+        type: "string"
+      title:
+        type: "string"
+      messages:
+        type: "array"
+        items:
+          $ref: "#/definitions/Message"
+    xml:
+      name: "Thread"
+  Message:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      pseudo:
+        type: "string"
+      message:
+        type: "string"
+      date:
+        type: "string"
+        format: "date-time"
+    xml:
+      name: "Message"
+  User:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      pseudo:
+        type: "string"
+      mdp:
+        type: "string"
+    xml:
+      name: "User"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      message:
+        type: "string"
+x-azure-api-id: "sh-1469571953760"
+basePath: /Axel-Girard/serveur_message_I4/1.0.0
+schemes:
+ - https
+# Added by API Auto Mocking Plugin
+host: virtserver.swaggerhub.com

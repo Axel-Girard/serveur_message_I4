@@ -85,7 +85,7 @@ router.patch('/:idTrhead', function(req, res) {
             res.respond("Message ajouté au thread !", 200);
           });
         } else {
-          res.respond("Aucune donnée", 404);
+          res.respond("Thread non trouvé", 404);
         }
       });
     } else {

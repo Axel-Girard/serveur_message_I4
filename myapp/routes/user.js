@@ -62,18 +62,4 @@ router.delete('/:idUser', function(req, res) {
   });
 });
 
-/* GET affiche un membre */
-router.get('/', function(req, res) {
-  userModel.find(null, function (err, users) {
-    if (err) {
-      throw err;
-    }
-    if(users.length > 0){
-      res.respond(users, 200);
-    } else {
-      res.respond("Aucune donnée", 404);
-    }
-  });
-});
-
 module.exports = router;
